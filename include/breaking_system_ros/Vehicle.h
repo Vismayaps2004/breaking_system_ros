@@ -10,4 +10,5 @@ class Vehicle {
     Position getPosition () const;
     double getSpeed () const;
     void updatePosition (double time);
+    double calculateDistance(Position obstacle);
 };

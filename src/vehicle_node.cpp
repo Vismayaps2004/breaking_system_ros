@@ -23,6 +23,16 @@ int main (int argc, char **argv) {
 
   ros::Time prevTime = ros::Time::now();
 
+  XmlRpc::XmlRpcValue obstacle;
+  nh.getParam("/obstacle_coordinates", obstacle);
+
+  Position obstacleCoord {
+    static_cast<double>(obstacle["x"]),
+    static_cast<double>(obstacle["y"])
+  };
+
+  ros::Publisher statusPub = nh.advertise<breaking_system_ros::vehicle_status>("/vehicle_status", 10);
+
   while (ros::ok()) {
     ros::Time currTime = ros::Time::now();
     double deltaTime = (currTime - prevTime).toSec();
@@ -30,6 +40,13 @@ int main (int argc, char **argv) {
 
     vh.updatePosition(deltaTime);
     publishPosition(pub, vh);
+    double distance = vh.calculateDistance(obstacleCoord);
+
+    breaking_system_ros::vehicle_status msg;
+    msg.distance = distance;
+    msg.speed = vh.getSpeed();
+    statusPub.publish(msg);
+
     rate.sleep();
   }
 }
