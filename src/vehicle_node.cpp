@@ -2,6 +2,7 @@
 #include <geometry_msgs/Point.h>
 #include <breaking_system_ros/Vehicle.h>
 #include <breaking_system_ros/Position.h>
+#include <breaking_system_ros/vehicle_status.h>
 
 void publishPosition (ros::Publisher pub, const Vehicle& vh) {
   Position position = vh.getPosition();
