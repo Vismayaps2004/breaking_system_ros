@@ -10,6 +10,7 @@ project(breaking_system_ros)
 find_package(catkin REQUIRED COMPONENTS
   roscpp
   std_msgs
+  geometry_msgs
 )
 
 ## System dependencies are found with CMake's conventions
@@ -104,7 +105,7 @@ find_package(catkin REQUIRED COMPONENTS
 catkin_package(
   INCLUDE_DIRS include
 #  LIBRARIES breaking_system_ros
-  CATKIN_DEPENDS roscpp std_msgs
+  CATKIN_DEPENDS roscpp std_msgs geometry_msgs
 #  DEPENDS system_lib
 )
 
@@ -149,11 +150,15 @@ include_directories(
 #   ${catkin_LIBRARIES}
 # )
 
-add_executable(vehicle_node src/vehicle_node.cpp)
+add_executable(vehicle_node
+  src/vehicle_node.cpp
+  src/Vehicle.cpp
+)
 
 target_link_libraries(vehicle_node
   ${catkin_LIBRARIES}
 )
+
 
 #############
 ## Install ##

@@ -10,6 +10,6 @@ double Vehicle::getSpeed () const {
 }
 
 void Vehicle::updatePosition (double time) {
-  position.x = position.x + (gerSpeed() * time);
-  position.y = position.y + (gerSpeed() * time);
+  position.x = position.x + (getSpeed() * time);
+  position.y = position.y + (getSpeed() * time);
 }
