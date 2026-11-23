@@ -1,6 +1,6 @@
+#include <cmath>
 #include <breaking_system_ros/Position.h>
 #include <breaking_system_ros/Vehicle.h>
-#include <cmath>
 
 Position Vehicle::getPosition () const {
   return position;
