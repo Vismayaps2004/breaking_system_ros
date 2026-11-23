@@ -14,6 +14,11 @@ void publishPosition (ros::Publisher pub, const Vehicle& vh) {
   pub.publish(msg);
 }
 
+void updateSpeed (const breaking_system_ros::vehicle_status::ConstPtr& msg) {
+  double speed = msg->speed;
+  vh.updateSpeed(speed);
+}
+
 int main (int argc, char **argv) {
   ros::init(argc, argv, "vehicle_node");
   ros::NodeHandle nh;
@@ -21,7 +26,6 @@ int main (int argc, char **argv) {
   ros::Rate rate(10);
 
   ros::Publisher pub = nh.advertise<geometry_msgs::Point>("/vehicle_position", 10);
-
   ros::Time prevTime = ros::Time::now();
 
   XmlRpc::XmlRpcValue obstacle;
@@ -47,6 +51,8 @@ int main (int argc, char **argv) {
     msg.distance = distance;
     msg.speed = vh.getSpeed();
     statusPub.publish(msg);
+
+    ros::Subscribe statusSub = nh.subscribe<breaking_system_ros::status>("/status_command", 10, updateSpeed);
 
     rate.sleep();
   }

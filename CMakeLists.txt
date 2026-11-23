@@ -51,6 +51,7 @@ find_package(catkin REQUIRED COMPONENTS
  add_message_files(
    FILES
    vehicle_status.msg
+   status.msg
 #   Message1.msg
 #   Message2.msg
  )
@@ -161,6 +162,16 @@ target_link_libraries(vehicle_node
   ${catkin_LIBRARIES}
 )
 
+add_executable(safety_node src/safety_node.cpp)
+
+target_link_libraries(safety_node
+  ${catkin_LIBRARIES}
+)
+
+add_dependencies(safety_node
+  ${${PROJECT_NAME}_EXPORTED_TARGETS}
+  ${catkin_EXPORTED_TARGETS}
+)
 
 #############
 ## Install ##
