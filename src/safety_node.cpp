@@ -34,9 +34,16 @@ SafetyCommands determineSafetyCommand(double distance, double stoppingDistance) 
     return STOP;
 }
 
-double calculateSpeed(double distance) {
-  double brakingDeceleration = 4;
-  return std::sqrt(2 * brakingDeceleration * distance);
+double calculateSpeed(SafetyCommands command, double distance, double stoppingDistance, double speed) {
+    double slowDistance = stoppingDistance * 2;
+    switch (command) {
+    case CONTINUE :
+      return speed;
+    case SLOW :
+      return speed * (distance - stoppingDistance) / (slowDistance - stoppingDistance);
+    case STOP :
+      return 0;
+  }
 }
 
 std::string getCommand (SafetyCommands command) {
@@ -62,7 +69,15 @@ void vehicleStatusCallback (
   SafetyCommands safetyCommand = determineSafetyCommand(distance, stoppingDistance);
   std::string command = getCommand(safetyCommand);
 
-  double dspeed = calculateSpeed(distance);
+  double dspeed = calculateSpeed(safetyCommand, distance, stoppingDistance, speed);
+
+ROS_INFO(
+    "Distance: %.2f | Speed: %.2f | Stopping distance: %.2f | Command: %s",
+    distance,
+    speed,
+    stoppingDistance,
+    command.c_str()
+);
 
   breaking_system_ros::status status;
   status.command = command;

@@ -3,7 +3,7 @@
 
 class Vehicle {
   private:
-    Position position{30, 100};
+    Position position{0, 0};
     double speed = 20;
 
   public:
@@ -11,5 +11,6 @@ class Vehicle {
     double getSpeed () const;
     void updatePosition (double time);
     double calculateDistance(const Position& obstacle);
-    void updateSpeed(double speed);
+    // void updateSpeed(double speed);
+    void applySafetyCommand(const std::string& command, double newSpeed);
 };

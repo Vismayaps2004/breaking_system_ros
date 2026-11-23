@@ -3,6 +3,7 @@
 #include <breaking_system_ros/Vehicle.h>
 #include <breaking_system_ros/Position.h>
 #include <breaking_system_ros/vehicle_status.h>
+#include <breaking_system_ros/status.h>
 
 void publishPosition (ros::Publisher pub, const Vehicle& vh) {
   Position position = vh.getPosition();
@@ -14,9 +15,8 @@ void publishPosition (ros::Publisher pub, const Vehicle& vh) {
   pub.publish(msg);
 }
 
-void updateSpeed (const breaking_system_ros::vehicle_status::ConstPtr& msg) {
-  double speed = msg->speed;
-  vh.updateSpeed(speed);
+void applySafetyCommand (const breaking_system_ros::status::ConstPtr& msg, Vehicle& vh) {
+  vh.applySafetyCommand(msg->command, msg->speed);
 }
 
 int main (int argc, char **argv) {
@@ -47,12 +47,22 @@ int main (int argc, char **argv) {
     publishPosition(pub, vh);
     double distance = vh.calculateDistance(obstacleCoord);
 
+    // ROS_INFO("Vehicle X: %.2f | Obstacle X: %.2f | Distance: %.2f",
+    //      vh.getPosition().x,
+    //      obstacleCoord.x,
+    //      distance);
+
     breaking_system_ros::vehicle_status msg;
     msg.distance = distance;
     msg.speed = vh.getSpeed();
     statusPub.publish(msg);
 
-    ros::Subscribe statusSub = nh.subscribe<breaking_system_ros::status>("/status_command", 10, updateSpeed);
+    ros::Subscriber statusSub = nh.subscribe<breaking_system_ros::status>(
+      "/status_command",
+      10,
+      [&vh](const breaking_system_ros::status::ConstPtr& msg){
+        applySafetyCommand(msg, vh);
+      });
 
     rate.sleep();
   }
