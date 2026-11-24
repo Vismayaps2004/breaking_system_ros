@@ -37,7 +37,12 @@ int main (int argc, char **argv) {
   };
 
   ros::Publisher statusPub = nh.advertise<breaking_system_ros::vehicle_status>("/vehicle_status", 10);
-
+   ros::Subscriber statusSub = nh.subscribe<breaking_system_ros::status>(
+      "/status_command",
+      10,
+      [&vh](const breaking_system_ros::status::ConstPtr& msg){
+        applySafetyCommand(msg, vh);
+      });
   while (ros::ok()) {
     ros::Time currTime = ros::Time::now();
     double deltaTime = (currTime - prevTime).toSec();
@@ -47,23 +52,12 @@ int main (int argc, char **argv) {
     publishPosition(pub, vh);
     double distance = vh.calculateDistance(obstacleCoord);
 
-    // ROS_INFO("Vehicle X: %.2f | Obstacle X: %.2f | Distance: %.2f",
-    //      vh.getPosition().x,
-    //      obstacleCoord.x,
-    //      distance);
-
     breaking_system_ros::vehicle_status msg;
     msg.distance = distance;
     msg.speed = vh.getSpeed();
     statusPub.publish(msg);
-
-    ros::Subscriber statusSub = nh.subscribe<breaking_system_ros::status>(
-      "/status_command",
-      10,
-      [&vh](const breaking_system_ros::status::ConstPtr& msg){
-        applySafetyCommand(msg, vh);
-      });
-
+ 
+    ros::spinOnce();
     rate.sleep();
   }
 }

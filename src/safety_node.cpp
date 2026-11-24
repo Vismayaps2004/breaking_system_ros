@@ -21,7 +21,8 @@ double calculateStoppingDistance(double speed) {
     return reactionDistance + brakingDistance;  
 }
 
-SafetyCommands determineSafetyCommand(double distance, double stoppingDistance) {
+SafetyCommands determineSafetyCommand(double distance) {
+  double stoppingDistance = 50;
   double slowDistance = stoppingDistance * 2;
   if (distance > slowDistance) {
     return CONTINUE;
@@ -34,7 +35,8 @@ SafetyCommands determineSafetyCommand(double distance, double stoppingDistance) 
     return STOP;
 }
 
-double calculateSpeed(SafetyCommands command, double distance, double stoppingDistance, double speed) {
+double calculateSpeed(SafetyCommands command, double distance, double speed) {
+    double stoppingDistance = 50;
     double slowDistance = stoppingDistance * 2;
     switch (command) {
     case CONTINUE :
@@ -44,6 +46,7 @@ double calculateSpeed(SafetyCommands command, double distance, double stoppingDi
     case STOP :
       return 0;
   }
+  return 0;
 }
 
 std::string getCommand (SafetyCommands command) {
@@ -65,17 +68,15 @@ void vehicleStatusCallback (
   double distance = msg->distance;
   double speed = msg->speed;
 
-  double stoppingDistance = calculateStoppingDistance(speed);
-  SafetyCommands safetyCommand = determineSafetyCommand(distance, stoppingDistance);
+  SafetyCommands safetyCommand = determineSafetyCommand(distance);
   std::string command = getCommand(safetyCommand);
 
-  double dspeed = calculateSpeed(safetyCommand, distance, stoppingDistance, speed);
+  double dspeed = calculateSpeed(safetyCommand, distance, speed);
 
 ROS_INFO(
-    "Distance: %.2f | Speed: %.2f | Stopping distance: %.2f | Command: %s",
+    "Distance: %.2f | Speed: %.2f | Command: %s",
     distance,
     speed,
-    stoppingDistance,
     command.c_str()
 );
 
