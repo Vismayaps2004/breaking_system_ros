@@ -41,8 +41,11 @@ double calculateSpeed(SafetyCommands command, double distance, double speed) {
     switch (command) {
     case CONTINUE :
       return speed;
-    case SLOW :
-      return speed * (distance - stoppingDistance) / (slowDistance - stoppingDistance);
+    case SLOW : {
+      double calculatedSpeed = speed * (distance - stoppingDistance) / (slowDistance - stoppingDistance);
+      double minimumSpeed = 2.0;
+      return std::max(calculatedSpeed, minimumSpeed);
+    }
     case STOP :
       return 0;
   }
