@@ -1,0 +1,6 @@
+<launch>
+    <rosparam param="obstacle_coordinates">
+        x: 200.0
+        y: 0.0
+    </rosparam>
+</launch>

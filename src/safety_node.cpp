@@ -10,17 +10,6 @@ enum SafetyCommands {
   STOP
 };
 
-double calculateStoppingDistance(double speed) {
-    const double brakingDeceleration = 5.0;
-    const double reactionTime = 0.5;
-
-    double reactionDistance = speed * reactionTime;
-    double brakingDistance =
-        (speed * speed) / (2 * brakingDeceleration);
-
-    return reactionDistance + brakingDistance;  
-}
-
 SafetyCommands determineSafetyCommand(double distance) {
   double stoppingDistance = 50;
   double slowDistance = stoppingDistance * 2;
